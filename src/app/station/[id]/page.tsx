@@ -6,11 +6,13 @@ import Link from "next/link";
 
 import { api } from "~/trpc/react";
 
-export default function StationPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type StationPageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function StationPage({ params }: StationPageProps) {
   const router = useRouter();
   const stationId = parseInt(params.id, 10);
   
