@@ -2,7 +2,6 @@ import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 
 import { api } from "~/trpc/server";
-import { type RouterOutputs } from "~/trpc/shared";
 
 export default async function Home() {
   noStore();

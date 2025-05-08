@@ -99,7 +99,7 @@ export const stationsRouter = createTRPCRouter({
     
     for (const station of allStations) {
       const turnout = await ctx.db.query.turnouts.findFirst({
-        where: eq(turnouts.stationId, station.id!),
+        where: eq(turnouts.stationId, station.id ?? 0),
         orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
       });
       
