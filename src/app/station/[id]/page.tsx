@@ -1,20 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { api } from "~/trpc/react";
 
 type StationPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default function StationPage({ params }: StationPageProps) {
+  // Use the React 'use' hook to unwrap the Promise
+  const { id } = use(params);
   const router = useRouter();
-  const stationId = parseInt(params.id, 10);
+  const stationId = parseInt(id, 10);
   
   // Fetch station data
   const { data: station, isLoading: stationLoading } = api.stations.getById.useQuery(
@@ -97,7 +99,7 @@ export default function StationPage({ params }: StationPageProps) {
                   {turnout?.voterCount.toLocaleString()}
                 </p>
                 <p className="mt-1 text-sm text-blue-200">
-                  Last updated: {turnout?.updatedAt ? new Date(turnout.updatedAt).toLocaleString() : 'Never'}
+                  Last updated: {turnout && 'updatedAt' in turnout && turnout.updatedAt ? new Date(turnout.updatedAt).toLocaleString() : 'Never'}
                 </p>
               </div>
             </div>
