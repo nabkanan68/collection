@@ -7,9 +7,9 @@ import { eq } from "drizzle-orm";
 export const stationsRouter = createTRPCRouter({
   // Get all stations
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.stations.findMany({
-      orderBy: (stations, { asc }) => [asc(stations.id)],
-    });
+    const results = await ctx.db.query.stations.findMany();
+    // Sort numerically by ID to ensure correct order (1, 2, ..., 81, 82)
+    return results.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
   }),
 
   // Get a single station by ID
@@ -32,6 +32,29 @@ export const stationsRouter = createTRPCRouter({
       
       return result ?? { stationId: input.stationId, voterCount: 0 };
     }),
+    
+  // Get all station turnouts in a single request (much more efficient)
+  getAllTurnouts: publicProcedure.query(async ({ ctx }) => {
+    // Get all turnouts in a single query
+    const allTurnouts = await ctx.db.query.turnouts.findMany({
+      orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
+    });
+    
+    // Create a map of the latest turnout for each station
+    const latestTurnoutByStation = new Map();
+    for (const turnout of allTurnouts) {
+      const existingTurnout = latestTurnoutByStation.get(turnout.stationId);
+      const currentUpdatedAt = turnout.updatedAt ?? new Date(0);
+      const existingUpdatedAt = existingTurnout?.updatedAt ?? new Date(0);
+      
+      if (!existingTurnout || currentUpdatedAt > existingUpdatedAt) {
+        latestTurnoutByStation.set(turnout.stationId, turnout);
+      }
+    }
+    
+    // Convert to array of turnout objects
+    return Array.from(latestTurnoutByStation.values());
+  }),
 
   // Update turnout for a station
   updateTurnout: publicProcedure
@@ -92,21 +115,28 @@ export const stationsRouter = createTRPCRouter({
     return { success: true };
   }),
 
-  // Get total turnout across all stations
+  // Get total turnout across all stations - optimized with a batch query
   getTotalTurnout: publicProcedure.query(async ({ ctx }) => {
-    const allStations = await ctx.db.query.stations.findMany();
-    let totalVoters = 0;
+    // Get all turnouts in a single query
+    const allTurnouts = await ctx.db.query.turnouts.findMany({
+      orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
+    });
     
-    for (const station of allStations) {
-      const turnout = await ctx.db.query.turnouts.findFirst({
-        where: eq(turnouts.stationId, station.id ?? 0),
-        orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
-      });
+    // Create a map of the latest turnout for each station
+    const latestTurnoutByStation = new Map();
+    for (const turnout of allTurnouts) {
+      const existingTurnout = latestTurnoutByStation.get(turnout.stationId);
+      const currentUpdatedAt = turnout.updatedAt ?? new Date(0);
+      const existingUpdatedAt = existingTurnout?.updatedAt ?? new Date(0);
       
-      if (turnout) {
-        totalVoters += turnout.voterCount;
+      if (!existingTurnout || currentUpdatedAt > existingUpdatedAt) {
+        latestTurnoutByStation.set(turnout.stationId, turnout);
       }
     }
+    
+    // Sum up the voter counts
+    const totalVoters = Array.from(latestTurnoutByStation.values())
+      .reduce((sum, turnout) => sum + turnout.voterCount, 0);
     
     return { totalVoters };
   }),
