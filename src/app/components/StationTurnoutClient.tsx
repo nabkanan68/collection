@@ -10,7 +10,7 @@ export function StationTurnoutClient({ stationId, initialVoterCount = 0 }: {
   const { turnouts, isLoading } = useStationsData();
   
   // Get the turnout for this station from the shared data
-  const turnout = turnouts[stationId] || { stationId, voterCount: initialVoterCount };
+  const turnout = turnouts[stationId] ?? { stationId, voterCount: initialVoterCount };
   
   return (
     <div className="mt-2">

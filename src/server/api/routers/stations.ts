@@ -40,15 +40,29 @@ export const stationsRouter = createTRPCRouter({
       orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
     });
     
+    // Define the turnout type for type safety
+    interface TypedTurnout {
+      stationId: number;
+      voterCount: number;
+      updatedAt: Date | null;
+    }
+    
     // Create a map of the latest turnout for each station
-    const latestTurnoutByStation = new Map();
+    const latestTurnoutByStation = new Map<number, TypedTurnout>();
     for (const turnout of allTurnouts) {
-      const existingTurnout = latestTurnoutByStation.get(turnout.stationId);
-      const currentUpdatedAt = turnout.updatedAt ?? new Date(0);
+      // Ensure type safety by creating a properly typed object
+      const typedTurnout: TypedTurnout = {
+        stationId: turnout.stationId,
+        voterCount: turnout.voterCount,
+        updatedAt: turnout.updatedAt ?? null
+      };
+      
+      const existingTurnout = latestTurnoutByStation.get(typedTurnout.stationId);
+      const currentUpdatedAt = typedTurnout.updatedAt ?? new Date(0);
       const existingUpdatedAt = existingTurnout?.updatedAt ?? new Date(0);
       
       if (!existingTurnout || currentUpdatedAt > existingUpdatedAt) {
-        latestTurnoutByStation.set(turnout.stationId, turnout);
+        latestTurnoutByStation.set(typedTurnout.stationId, typedTurnout);
       }
     }
     
@@ -122,15 +136,29 @@ export const stationsRouter = createTRPCRouter({
       orderBy: (turnouts, { desc }) => [desc(turnouts.updatedAt)],
     });
     
+    // Define the turnout type for type safety
+    interface TypedTurnout {
+      stationId: number;
+      voterCount: number;
+      updatedAt: Date | null;
+    }
+    
     // Create a map of the latest turnout for each station
-    const latestTurnoutByStation = new Map();
+    const latestTurnoutByStation = new Map<number, TypedTurnout>();
     for (const turnout of allTurnouts) {
-      const existingTurnout = latestTurnoutByStation.get(turnout.stationId);
-      const currentUpdatedAt = turnout.updatedAt ?? new Date(0);
+      // Ensure type safety by creating a properly typed object
+      const typedTurnout: TypedTurnout = {
+        stationId: turnout.stationId,
+        voterCount: turnout.voterCount,
+        updatedAt: turnout.updatedAt ?? null
+      };
+      
+      const existingTurnout = latestTurnoutByStation.get(typedTurnout.stationId);
+      const currentUpdatedAt = typedTurnout.updatedAt ?? new Date(0);
       const existingUpdatedAt = existingTurnout?.updatedAt ?? new Date(0);
       
       if (!existingTurnout || currentUpdatedAt > existingUpdatedAt) {
-        latestTurnoutByStation.set(turnout.stationId, turnout);
+        latestTurnoutByStation.set(typedTurnout.stationId, typedTurnout);
       }
     }
     

@@ -23,7 +23,9 @@ async function initializeStations() {
   return api.stations.initializeStations();
 }
 
-// Loading component for suspense boundaries
+// We're using inline loading states instead of this component
+// Keeping the commented code for future reference if needed
+/*
 function LoadingCard() {
   return (
     <div className="flex h-24 animate-pulse flex-col items-center rounded-lg bg-blue-800/30 p-4 text-center">
@@ -32,6 +34,7 @@ function LoadingCard() {
     </div>
   );
 }
+*/
 
 // Server component wrapper for station turnout
 const StationTurnout = async ({ stationId }: { stationId: number }) => {
@@ -87,7 +90,7 @@ export default async function Home() {
             </p>
             <div className="mt-4 rounded-lg bg-blue-900 p-4 text-center">
               <h2 className="text-2xl font-bold">Total Voter Turnout</h2>
-              <TotalTurnoutClient initialTotalVoters={totalTurnout.totalVoters} />
+              <TotalTurnoutClient initialTotalVoters={totalTurnout?.totalVoters ?? 0} />
             </div>
             <div className="mt-4">
               <RefreshButton />

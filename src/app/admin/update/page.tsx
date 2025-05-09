@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "~/trpc/react";
 
 export default function UpdateVoterCount() {
-  const router = useRouter();
+  // Removed unused router variable
   const [stationId, setStationId] = useState<string>("");
   const [voterCount, setVoterCount] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +18,7 @@ export default function UpdateVoterCount() {
   const { data: stations, isLoading: isLoadingStations } = api.stations.getAll.useQuery();
   
   // Get the current turnout for the selected station
-  const { data: currentTurnout, refetch: refetchTurnout } = api.stations.getTurnout.useQuery(
+  const { data: currentTurnout } = api.stations.getTurnout.useQuery(
     { stationId: parseInt(stationId) || 0 },
     { enabled: !!stationId && stationId !== "0" }
   );

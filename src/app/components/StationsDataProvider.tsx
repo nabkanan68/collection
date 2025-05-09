@@ -23,7 +23,7 @@ const StationsContext = createContext<StationsContextType>({
   turnouts: {},
   isLoading: true,
   lastUpdated: new Date(),
-  refreshData: () => {}, // Default empty function
+  refreshData: () => { /* Default implementation */ }, // Non-empty function to satisfy linting
 });
 
 // Hook to access the stations data
@@ -44,7 +44,8 @@ export function StationsDataProvider({
   }, {} as Record<number, TurnoutData>);
   
   const [turnouts, setTurnouts] = useState<Record<number, TurnoutData>>(initialTurnoutsRecord);
-  const [isLoading, setIsLoading] = useState(false);
+  // We use setIsLoading but not isLoading directly - it's used in the context value
+  const [, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   // 5 minutes in milliseconds (300,000ms)
   const [refreshInterval, setRefreshInterval] = useState(300000); 
@@ -61,7 +62,8 @@ export function StationsDataProvider({
   // Manual refresh function
   const refreshData = () => {
     setIsLoading(true);
-    refetch().then(() => {
+    // Fix floating promise by using void operator
+    void refetch().then(() => {
       setLastUpdated(new Date());
     });
   };
@@ -70,8 +72,14 @@ export function StationsDataProvider({
   useEffect(() => {
     if (data) {
       // Convert array to record for faster lookups
-      const newTurnouts = data.reduce((acc: Record<number, TurnoutData>, turnout: TurnoutData) => {
-        acc[turnout.stationId] = turnout;
+      const newTurnouts = data.reduce((acc: Record<number, TurnoutData>, turnout) => {
+        // Type safety for turnout data
+        const typedTurnout: TurnoutData = {
+          stationId: turnout.stationId,
+          voterCount: turnout.voterCount,
+          updatedAt: turnout.updatedAt
+        };
+        acc[typedTurnout.stationId] = typedTurnout;
         return acc;
       }, {} as Record<number, TurnoutData>);
       
@@ -97,7 +105,7 @@ export function StationsDataProvider({
       turnouts, 
       isLoading: isFetching, 
       lastUpdated,
-      refreshData 
+      refreshData
     }}>
       {children}
     </StationsContext.Provider>
