@@ -165,31 +165,31 @@ export default function UpdateVoterCount() {
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a365d] to-[#0f172a] text-white">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+      <div className="container mx-auto px-3 py-4">
+        <header className="mb-4 text-center">
+          <h1 className="text-3xl font-extrabold tracking-tight">
             Update Voter Count
           </h1>
-          <p className="mt-2 text-xl text-blue-200">
-            Select a station and enter the current voter count
+          <p className="mt-1 text-sm text-blue-200">
+            Enter station ID and voter count
           </p>
         </header>
         
         {message && (
-          <div className={`mb-6 rounded-lg p-4 text-center ${
+          <div className={`mb-3 rounded-lg p-2 text-center text-sm ${
             message.type === "success" ? "bg-green-800/50 text-green-200" : "bg-red-800/50 text-red-200"
           }`}>
             {message.text}
           </div>
         )}
         
-        <div className="mx-auto max-w-md rounded-lg bg-blue-900/50 p-6 shadow-lg">
+        <div className="mx-auto max-w-md rounded-lg bg-blue-900/50 p-3 shadow-lg">
           <form onSubmit={handleSubmit}>
             {inputMode === "station" ? (
               /* Station ID Input Mode */
               <>
-                <div className="mb-6">
-                  <label htmlFor="stationId" className="mb-2 block text-lg font-medium">
+                <div className="mb-3">
+                  <label htmlFor="stationId" className="mb-1 block text-sm font-medium">
                     Enter Polling Station ID (1-82)
                   </label>
                   <input
@@ -197,26 +197,26 @@ export default function UpdateVoterCount() {
                     type="text"
                     value={stationId}
                     readOnly
-                    className="w-full rounded-lg bg-blue-800 p-3 text-right text-xl font-bold text-white focus:outline-none"
+                    className="w-full rounded-lg bg-blue-800 p-2 text-right text-xl font-bold text-white focus:outline-none"
                     placeholder="Enter station ID"
                   />
                 </div>
                 
                 {stationName && (
-                  <div className="mb-6 rounded-lg bg-blue-800/50 p-4 text-center">
-                    <p className="text-sm text-blue-200">Selected Station</p>
-                    <p className="text-xl font-bold text-white">{stationName}</p>
+                  <div className="mb-3 rounded-lg bg-blue-800/50 p-2 text-center">
+                    <p className="text-xs text-blue-200">Selected Station</p>
+                    <p className="text-base font-bold text-white">{stationName}</p>
                   </div>
                 )}
                 
                 {/* Keypad for Station ID */}
-                <div className="mb-6 grid grid-cols-3 gap-2">
+                <div className="mb-3 grid grid-cols-3 gap-1">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
                     <button
                       key={digit}
                       type="button"
                       onClick={() => handleDigitClick(digit.toString())}
-                      className="rounded-lg bg-blue-700 p-4 text-xl font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
+                      className="rounded-lg bg-blue-700 p-3 text-lg font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
                     >
                       {digit}
                     </button>
@@ -224,21 +224,21 @@ export default function UpdateVoterCount() {
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="rounded-lg bg-red-700 p-4 text-xl font-bold transition-colors hover:bg-red-600 active:bg-red-800"
+                    className="rounded-lg bg-red-700 p-3 text-lg font-bold transition-colors hover:bg-red-600 active:bg-red-800"
                   >
                     C
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDigitClick("0")}
-                    className="rounded-lg bg-blue-700 p-4 text-xl font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
+                    className="rounded-lg bg-blue-700 p-3 text-lg font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
                   >
                     0
                   </button>
                   <button
                     type="button"
                     onClick={handleBackspace}
-                    className="rounded-lg bg-yellow-700 p-4 text-xl font-bold transition-colors hover:bg-yellow-600 active:bg-yellow-800"
+                    className="rounded-lg bg-yellow-700 p-3 text-lg font-bold transition-colors hover:bg-yellow-600 active:bg-yellow-800"
                   >
                     ⌫
                   </button>
@@ -249,14 +249,14 @@ export default function UpdateVoterCount() {
                   type="button"
                   onClick={handleContinueToVoterCount}
                   disabled={!stationId || isLoadingStations}
-                  className="w-full rounded-lg bg-blue-600 p-4 text-xl font-bold transition-colors hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50"
+                  className="w-full rounded-lg bg-blue-600 p-2 text-base font-bold transition-colors hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50"
                 >
                   Continue
                 </button>
                 
                 {/* Quick Update Last Station Button */}
                 {lastUpdatedStation && (
-                  <div className="mt-4">
+                  <div className="mt-2">
                     <button
                       type="button"
                       onClick={() => {
@@ -264,7 +264,7 @@ export default function UpdateVoterCount() {
                         setStationName(lastUpdatedStation.name);
                         handleContinueToVoterCount();
                       }}
-                      className="w-full rounded-lg bg-green-600 p-3 text-lg font-bold transition-colors hover:bg-green-500 active:bg-green-700"
+                      className="w-full rounded-lg bg-green-600 p-2 text-sm font-bold transition-colors hover:bg-green-500 active:bg-green-700"
                     >
                       Quick Update {lastUpdatedStation.name}
                     </button>
@@ -274,13 +274,13 @@ export default function UpdateVoterCount() {
             ) : (
               /* Voter Count Input Mode */
               <>
-                <div className="mb-6 rounded-lg bg-blue-800/50 p-4 text-center">
-                  <p className="text-sm text-blue-200">Selected Station</p>
-                  <p className="text-xl font-bold text-white">{stationName}</p>
+                <div className="mb-3 rounded-lg bg-blue-800/50 p-2 text-center">
+                  <p className="text-xs text-blue-200">Selected Station</p>
+                  <p className="text-base font-bold text-white">{stationName}</p>
                   {currentTurnout && (
                     <>
-                      <p className="mt-2 text-sm text-blue-200">Current Voter Count</p>
-                      <p className="text-2xl font-bold text-yellow-300">
+                      <p className="mt-1 text-xs text-blue-200">Current Voter Count</p>
+                      <p className="text-xl font-bold text-yellow-300">
                         {currentTurnout.voterCount.toLocaleString()}
                       </p>
                     </>
@@ -288,8 +288,8 @@ export default function UpdateVoterCount() {
                 </div>
                 
                 {/* Voter Count Input */}
-                <div className="mb-6">
-                  <label htmlFor="voterCount" className="mb-2 block text-lg font-medium">
+                <div className="mb-3">
+                  <label htmlFor="voterCount" className="mb-1 block text-sm font-medium">
                     New Voter Count
                   </label>
                   <input
@@ -297,19 +297,19 @@ export default function UpdateVoterCount() {
                     type="text"
                     value={voterCount}
                     readOnly
-                    className="w-full rounded-lg bg-blue-800 p-3 text-right text-xl font-bold text-white focus:outline-none"
+                    className="w-full rounded-lg bg-blue-800 p-2 text-right text-xl font-bold text-white focus:outline-none"
                     placeholder="Enter new count"
                   />
                 </div>
                 
                 {/* Keypad for Voter Count */}
-                <div className="mb-6 grid grid-cols-3 gap-2">
+                <div className="mb-3 grid grid-cols-3 gap-1">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
                     <button
                       key={digit}
                       type="button"
                       onClick={() => handleDigitClick(digit.toString())}
-                      className="rounded-lg bg-blue-700 p-4 text-xl font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
+                      className="rounded-lg bg-blue-700 p-3 text-lg font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
                     >
                       {digit}
                     </button>
@@ -317,32 +317,32 @@ export default function UpdateVoterCount() {
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="rounded-lg bg-red-700 p-4 text-xl font-bold transition-colors hover:bg-red-600 active:bg-red-800"
+                    className="rounded-lg bg-red-700 p-3 text-lg font-bold transition-colors hover:bg-red-600 active:bg-red-800"
                   >
                     C
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDigitClick("0")}
-                    className="rounded-lg bg-blue-700 p-4 text-xl font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
+                    className="rounded-lg bg-blue-700 p-3 text-lg font-bold transition-colors hover:bg-blue-600 active:bg-blue-800"
                   >
                     0
                   </button>
                   <button
                     type="button"
                     onClick={handleBackspace}
-                    className="rounded-lg bg-yellow-700 p-4 text-xl font-bold transition-colors hover:bg-yellow-600 active:bg-yellow-800"
+                    className="rounded-lg bg-yellow-700 p-3 text-lg font-bold transition-colors hover:bg-yellow-600 active:bg-yellow-800"
                   >
                     ⌫
                   </button>
                 </div>
                 
-                <div className="mb-4 flex gap-2">
+                <div className="mb-2 flex gap-1">
                   {/* Back Button */}
                   <button
                     type="button"
                     onClick={handleBackToStationSelection}
-                    className="flex-1 rounded-lg bg-gray-600 p-4 text-lg font-bold transition-colors hover:bg-gray-500 active:bg-gray-700"
+                    className="flex-1 rounded-lg bg-gray-600 p-2 text-base font-bold transition-colors hover:bg-gray-500 active:bg-gray-700"
                   >
                     Back
                   </button>
@@ -351,7 +351,7 @@ export default function UpdateVoterCount() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !voterCount}
-                    className="flex-1 rounded-lg bg-green-600 p-4 text-lg font-bold transition-colors hover:bg-green-500 active:bg-green-700 disabled:opacity-50"
+                    className="flex-1 rounded-lg bg-green-600 p-2 text-base font-bold transition-colors hover:bg-green-500 active:bg-green-700 disabled:opacity-50"
                   >
                     {isSubmitting ? "Updating..." : "Update"}
                   </button>
@@ -360,8 +360,8 @@ export default function UpdateVoterCount() {
             )}
           </form>
           
-          <div className="mt-6 text-center">
-            <Link href="/" className="text-blue-300 hover:text-blue-200">
+          <div className="mt-3 text-center">
+            <Link href="/" className="text-sm text-blue-300 hover:text-blue-200">
               ← Back to Dashboard
             </Link>
           </div>
